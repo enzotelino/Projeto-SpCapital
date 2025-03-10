@@ -3,13 +3,11 @@ document.getElementById('formImovel').addEventListener('submit', async (event) =
 
     const titulo = document.getElementById('titulo').value;
     const preco = document.getElementById('preco').value;
-    const fotos = document.getElementById('fotos').value.split(',');
     const rua = document.getElementById('rua').value;
 
     const apartamento = {
         titulo: titulo,
         preco: parseInt(preco),
-        fotos: fotos.map(foto => foto.trim()),
         endereco: {
             rua: rua
         }
@@ -41,22 +39,14 @@ fetch('http://localhost:3000/apartamentos')
     .then(response => response.json())
     .then(apartamentos => {
         const listaImoveis = document.getElementById('listaImoveis');
-        // Limpa a lista existente
+        
         while (listaImoveis.firstChild) {
             listaImoveis.removeChild(listaImoveis.firstChild);
         }
-        // Adiciona os anúncios à lista
+        // Adiciona os anúncios à list
         apartamentos.forEach(apartamento => {
             const anuncio = document.createElement('div');
             anuncio.classList.add('anuncio'); // Adiciona uma classe para estilização
-
-            // Adiciona a imagem do apartamento
-            if (apartamento.fotos && apartamento.fotos.length > 0) {
-                const imagem = document.createElement('img');
-                imagem.src = apartamento.fotos[0]; // Exibe a primeira foto
-                imagem.classList.add('anuncio-imagem'); // Adiciona classe CSS
-                anuncio.appendChild(imagem);
-            }
 
             const titulo = document.createElement('h2');
             titulo.textContent = apartamento.titulo;
@@ -93,7 +83,6 @@ async function buscarApartamento(id) {
 function preencherFormularioEdicao(apartamento) {
     document.getElementById('editTitulo').value = apartamento.titulo;
     document.getElementById('editPreco').value = apartamento.preco;
-    document.getElementById('editFotos').value = apartamento.fotos.join(',');
     document.getElementById('editRua').value = apartamento.endereco.rua;
     document.getElementById('editId').value = apartamento.id;
 }
@@ -104,13 +93,11 @@ async function atualizarApartamento(event) {
     const id = document.getElementById('editId').value;
     const titulo = document.getElementById('editTitulo').value;
     const preco = document.getElementById('editPreco').value;
-    const fotos = document.getElementById('editFotos').value.split(',');
     const rua = document.getElementById('editRua').value;
 
     const apartamento = {
         titulo,
         preco,
-        fotos: fotos.map(foto => foto.trim()),
         endereco: { rua }
     };
 

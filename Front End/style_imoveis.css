@@ -20,7 +20,7 @@ body {
 
 header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between; /* Distribui o espaço entre os elementos */
     align-items: center;
     padding: 30px 10%;
     height: 150px;
@@ -105,6 +105,12 @@ button:hover {
     resize: vertical;
 }
 
+.add_imovel form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Estica os elementos para ocupar a largura total */
+}
+
 .add_imovel button {
     background-color: #112D4E;
     color: white;
@@ -113,7 +119,9 @@ button:hover {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    width: 100%;
+    align-self: center; /* Centraliza o botão horizontalmente */
+    margin-top: 10px;
+    width: auto; /* Remove a largura fixa */
 }
 
 .add_imovel button:hover {

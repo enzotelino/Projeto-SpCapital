@@ -5,7 +5,7 @@ async function apartamentosRoutes(fastify, options) {
     const apartamentosCollection = db.collection('apartamentos');
 
     fastify.post('/', async (request, reply) => {
-        const { titulo, preco, fotos, endereco } = request.body;
+        const { titulo, preco, endereco } = request.body;
         const criadoEm = admin.firestore.FieldValue.serverTimestamp();
         const atualizadoEm = admin.firestore.FieldValue.serverTimestamp();
 
@@ -16,8 +16,7 @@ async function apartamentosRoutes(fastify, options) {
 
         const docRef = await apartamentosCollection.add({
             titulo,
-            valor: preco, 
-            fotos,
+            valor: preco, // Use o valor recebido
             endereco,
             criadoEm,
             atualizadoEm
@@ -34,9 +33,9 @@ async function apartamentosRoutes(fastify, options) {
 
         fastify.put('/:id', async (request, reply) => {
             const { id } = request.params;
-            const { fotos, valor, endereco } = request.body;
+            const {valor, endereco } = request.body;
             const atualizadoEm = admin.firestore.FieldValue.serverTimestamp();
-            await apartamentosCollection.doc(id).update({ fotos, valor, endereco, atualizadoEm });
+            await apartamentosCollection.doc(id).update({ valor, endereco, atualizadoEm });
             reply.send({ message: 'Anúncio atualizado com sucesso' });
         });
 
@@ -48,35 +47,6 @@ async function apartamentosRoutes(fastify, options) {
             });
             reply.send(apartamentos);
         });
-
-        // Rota para obter um imóvel por ID
-        fastify.get('/apartamentos/:id', async (request, reply) => {
-             const { id } = request.params;
-                const apartamento = apartamentos.find(a => a.id === parseInt(id));
-             if (!apartamento) {
-                return reply.status(404).send({ message: 'Apartamento não encontrado' });
-             }
-        reply.send(apartamento);
-        });
-        
-        // Rota para atualizar um imóvel
-
-    fastify.put('/apartamentos/:id', async (request, reply) => {
-        const { id } = request.params;
-        const { titulo, preco, fotos, rua } = request.body;
-        const apartamentoIndex = apartamentos.findIndex(a => a.id === parseInt(id));
-        if (apartamentoIndex === -1) {
-            return reply.status(404).send({ message: 'Apartamento não encontrado' });
-    }
-    apartamentos[apartamentoIndex] = {
-        id: parseInt(id),
-        titulo,
-        preco,
-        fotos,
-        endereco: { rua }
-    };
-    reply.send(apartamentos[apartamentoIndex]);
-});
     }
 
     module.exports = apartamentosRoutes;
