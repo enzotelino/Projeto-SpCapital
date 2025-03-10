@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style_imoveis.css">
+    <title>Sp Capital Imóveis</title>
+</head>
+<body>
+    <header>
+        <img src="/Front End/assets/Projeto SpCapitalImovies 1.svg" class="logo">
+        <nav>
+            <ul class="nav_links">
+                <li><a href="index.html">Quem somos</a></li>
+                <li><a href="imoveis.html">Imóveis</a></li>
+                <li><a href="#">Contatos</a></li>
+            </ul>
+        </nav>
+        <a class="cta" href="#"><button>Faça uma visita!</button></a>
+    </header>
+    <main>
+        <section class="add_imovel">
+            <h2>Visão Adiministrador</h2>
+            <form id="formImovel">
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" required><br><br>
+                <label for="preco">Preço:</label>
+                <input type="number" id="preco" required><br><br>
+                <label for="fotos">URLs das Fotos</label><br>
+                <textarea id="fotos" name="fotos"></textarea><br><br>
+                <label for="rua">Rua:</label>
+                <input type="text" id="rua" name="rua"><br><br>
+                <button type="submit">Cadastrar</button>
+            </form>
+        </section>
+        <div id="listaImoveis">
+            </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
