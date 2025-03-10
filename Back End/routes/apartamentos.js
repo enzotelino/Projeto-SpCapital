@@ -16,7 +16,7 @@ async function apartamentosRoutes(fastify, options) {
 
         const docRef = await apartamentosCollection.add({
             titulo,
-            valor: preco, // Use o valor recebido
+            valor: preco, 
             fotos,
             endereco,
             criadoEm,

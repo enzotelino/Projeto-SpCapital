@@ -26,7 +26,7 @@ document.getElementById('formImovel').addEventListener('submit', async (event) =
 
         if (response.ok) {
             alert('Apartamento cadastrado com sucesso!');
-            // Recarrega a página para exibir os novos anúncios
+            
             window.location.reload();
         } else {
             alert('Erro ao cadastrar apartamento.');

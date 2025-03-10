@@ -125,10 +125,9 @@ button:hover {
     flex-direction: column;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 24px; /* Aumenta o espaçamento interno */
-    margin: 24px; /* Aumenta o espaçamento externo */
-    width: 350px; /* Aumenta a largura */
-    /* height: 400px;  caso queira aumentar a altura */
+    padding: 24px;
+    margin: 24px; 
+    width: 350px; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
@@ -139,14 +138,14 @@ button:hover {
 
 .anuncio-imagem {
     width: 100%;
-    height: 250px; /* Aumenta a altura da imagem */
+    height: 250px; 
     object-fit: cover;
     border-radius: 4px;
     margin-bottom: 12px;
 }
 
 .anuncio-titulo {
-    font-size: 1.4em; /* Aumenta o tamanho da fonte */
+    font-size: 1.4em;
     margin-bottom: 10px;
     color: #333;
 }
@@ -155,10 +154,10 @@ button:hover {
     font-weight: bold;
     color: #007bff;
     margin-bottom: 6px;
-    font-size: 1.1em; /* aumenta o tamanho da fonte */
+    font-size: 1.1em; 
 }
 
 .anuncio-endereco {
-    font-size: 1.1em; /* aumenta o tamanho da fonte */
+    font-size: 1.1em; 
     color: #666;
 }
