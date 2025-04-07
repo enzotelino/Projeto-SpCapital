@@ -25,12 +25,18 @@ async function apartamentosRoutes(fastify, options) {
         reply.send({ id: docRef.id });
     });
 
-        fastify.delete('/:id', async (request, reply) => {
-            const { id } = request.params;
+    fastify.delete('/:id', async (request, reply) => {
+        const { id } = request.params;
+        try {
+            console.log('Recebida requisição DELETE para o imóvel:', id); // Adicione este log
             await apartamentosCollection.doc(id).delete();
-            reply.send({ message: 'Anúncio removido com sucesso' });
-        });
-
+            reply.send({ message: 'Apartamento removido com sucesso' });
+            console.log('Imóvel removido com sucesso:', id); // Adicione este log
+        } catch (error) {
+            console.error('Erro ao remover imóvel:', error); // Adicione este log
+            reply.status(500).send({ error: 'Erro ao remover apartamento' });
+        }
+    });
         fastify.put('/:id', async (request, reply) => {
             const { id } = request.params;
             const {valor, endereco } = request.body;

@@ -66,12 +66,44 @@ fetch('http://localhost:3000/apartamentos')
                 anuncio.appendChild(endereco);
             }
 
+             // Adiciona o botão de exclusão
+             const botaoExcluir = document.createElement('button');
+             botaoExcluir.textContent = 'Excluir';
+             botaoExcluir.classList.add('botao-excluir'); // Adiciona uma classe para estilização
+ 
+             // Adiciona um ouvinte de evento para o botão de exclusão
+             botaoExcluir.addEventListener('click', () => {
+                 excluirApartamento(apartamento.id);
+             });
+ 
+             anuncio.appendChild(botaoExcluir);
+
             listaImoveis.appendChild(anuncio);
         });
     })
     .catch(error => {
         console.error('Erro ao buscar anúncios:', error);
     });
+
+    // Função para excluir um imóvel
+async function excluirApartamento(id) {
+    try {
+        const url = `http://localhost:3000/apartamentos/${id}`;
+        console.log('URL da requisição DELETE:', url); // Adicione este log
+        const response = await fetch(url, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Apartamento excluído com sucesso!');
+            window.location.reload(); // Recarrega a página para atualizar a lista
+        } else {
+            alert('Erro ao excluir apartamento.');
+        }
+    } catch (error) {
+        alert('Erro ao enviar requisição.');
+    }
+}
 
     // Função para buscar um imóvel por ID
 async function buscarApartamento(id) {

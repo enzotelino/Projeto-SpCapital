@@ -169,3 +169,19 @@ button:hover {
     font-size: 1.1em; 
     color: #666;
 }
+
+.botao-excluir {
+    background-color: #d9534f;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    align-self: flex-end; /* Alinha o botão à direita */
+    margin-top: 10px;
+}
+
+.botao-excluir:hover {
+    background-color: #c9302c;
+}
