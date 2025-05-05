@@ -21,7 +21,7 @@
     </header>
     <main>
         <section class="add_imovel">
-            <h2>Visão Adiministrador</h2>
+            <h2>Visão Administrador</h2>
             <form id="formImovel">
                 <label for="titulo">Título:</label>
                 <input type="text" id="titulo" required><br><br>
@@ -32,8 +32,25 @@
                 <button type="submit">Cadastrar</button>
             </form>
         </section>
-        <div id="listaImoveis">
+                    <!-- Modal de Edição -->
+            <div id="modalEdicao" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>Editar Imóvel</h3>
+                    <form id="formEdicao">
+                        <input type="hidden" id="editId">
+                        <label for="editTitulo">Título:</label>
+                        <input type="text" id="editTitulo" required><br><br>
+                        <label for="editPreco">Preço:</label>
+                        <input type="number" id="editPreco" required><br><br>
+                        <label for="editRua">Endereço:</label>
+                        <input type="text" id="editRua"><br><br>
+                        <button type="submit">Salvar</button>
+                    </form>
+                </div>
             </div>
+
+        <div id="listaImoveis"></div>
     </main>
     <script src="script.js"></script>
 </body>
