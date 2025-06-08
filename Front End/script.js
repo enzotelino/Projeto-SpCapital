@@ -1,27 +1,30 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Seu código de envio de formulário para cadastro de imóvel
+    const API_BASE_URL = 'http://localhost:3000';
+
+    // --- SEU CÓDIGO DE CADASTRO DE IMÓVEL (POST) PERMANECE O MESMO ---
+    // (Ele já envia a URL da imagem para o backend e a armazena no Firestore)
     document.getElementById('formImovel').addEventListener('submit', async (event) => {
         event.preventDefault();
-
         const titulo = document.getElementById('titulo').value;
         const preco = document.getElementById('preco').value;
         const rua = document.getElementById('rua').value;
+        const imageUrl = document.getElementById('imageUrl').value;
 
         const apartamento = {
             titulo: titulo,
             preco: parseInt(preco),
-            endereco: {
-                rua: rua
-            }
+            endereco: { rua: rua },
+            imageUrl: imageUrl || null
         };
 
+        console.log("Objeto apartamento a ser enviado:", apartamento);
+        console.log("JSON.stringify(apartamento):", JSON.stringify(apartamento));
+
         try {
-            const response = await fetch('http://localhost:3000/apartamentos', {
+            const response = await fetch(`${API_BASE_URL}/apartamentos`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(apartamento)
             });
 
@@ -29,15 +32,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('Apartamento cadastrado com sucesso!');
                 window.location.reload();
             } else {
-                alert('Erro ao cadastrar apartamento.');
+                const errorData = await response.json();
+                alert(`Erro ao cadastrar apartamento: ${errorData.error || response.statusText}`);
             }
         } catch (error) {
+            console.error('Erro ao enviar requisição:', error);
             alert('Erro ao enviar requisição.');
         }
     });
 
-    // Busca os anúncios do backend e exibe na lista
-    fetch('http://localhost:3000/apartamentos')
+
+    // --- BUSCA E EXIBIÇÃO DOS ANÚNCIOS (GET) ---
+    fetch(`${API_BASE_URL}/apartamentos`)
         .then(response => response.json())
         .then(apartamentos => {
             const listaImoveis = document.getElementById('listaImoveis');
@@ -46,52 +52,52 @@ document.addEventListener('DOMContentLoaded', function () {
                 listaImoveis.removeChild(listaImoveis.firstChild);
             }
 
-            // Adiciona os anúncios à lista
             apartamentos.forEach(apartamento => {
                 const anuncio = document.createElement('div');
-                anuncio.classList.add('anuncio'); // Adiciona uma classe para estilização
+                anuncio.classList.add('anuncio');
+
+                if (apartamento.imageUrl) {
+                    const img = document.createElement('img');
+                    // AQUI ESTÁ A MUDANÇA PRINCIPAL: Usando o endpoint do proxy para o 'src'
+                    // `encodeURIComponent` é importante para URLs com caracteres especiais
+                    img.src = `${API_BASE_URL}/proxy-image?url=${encodeURIComponent(apartamento.imageUrl)}`;
+                    img.alt = apartamento.titulo;
+                    img.classList.add('anuncio-imagem');
+                    anuncio.appendChild(img);
+                }
 
                 const titulo = document.createElement('h2');
                 titulo.textContent = apartamento.titulo;
-                titulo.classList.add('anuncio-titulo'); // Adiciona classe CSS
+                titulo.classList.add('anuncio-titulo');
                 anuncio.appendChild(titulo);
 
                 const preco = document.createElement('p');
                 preco.textContent = `R$ ${apartamento.preco}`;
-                preco.classList.add('anuncio-preco'); // Adiciona classe CSS
+                preco.classList.add('anuncio-preco');
                 anuncio.appendChild(preco);
 
-                // Adiciona o endereço do apartamento
                 if (apartamento.endereco && apartamento.endereco.rua) {
                     const endereco = document.createElement('p');
                     endereco.textContent = `Rua: ${apartamento.endereco.rua}`;
-                    endereco.classList.add('anuncio-endereco'); // Adiciona classe CSS
+                    endereco.classList.add('anuncio-endereco');
                     anuncio.appendChild(endereco);
                 }
 
-                // Adiciona o botão de exclusão
                 const botaoExcluir = document.createElement('button');
                 botaoExcluir.textContent = 'Excluir';
-                botaoExcluir.classList.add('botao-excluir'); // Adiciona uma classe para estilização
-                
-                // Adiciona um ouvinte de evento para o botão de exclusão
+                botaoExcluir.classList.add('botao-excluir');
                 botaoExcluir.addEventListener('click', () => {
                     excluirApartamento(apartamento.id);
                 });
-                
                 anuncio.appendChild(botaoExcluir);
 
-                // Botão de editar com ícone de lápis no canto superior direito
                 const botaoEditar = document.createElement('button');
-                botaoEditar.innerHTML = '<i class="fa fa-pencil-alt"></i>'; // Adicionando o ícone de lápis
+                botaoEditar.innerHTML = '<i class="fa fa-pencil-alt"></i>';
                 botaoEditar.classList.add('botao-editar');
-
                 botaoEditar.addEventListener('click', async () => {
                     document.getElementById('modalEdicao').style.display = 'block'; 
-                    preencherFormularioEdicao(apartamento);  // Preenche o formulário com os dados do imóvel
+                    preencherFormularioEdicao(apartamento);
                 });
-
-                // Posiciona o botão de editar no canto superior direito
                 botaoEditar.classList.add('botao-editar-posicao');
                 anuncio.appendChild(botaoEditar);
 
@@ -101,65 +107,82 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => {
             console.error('Erro ao buscar anúncios:', error);
+            alert('Erro ao carregar anúncios.');
         });
 
-    // Função para excluir um imóvel
+    // --- FUNÇÃO DE EXCLUIR APARTAMENTO (NÃO MUDA) ---
     async function excluirApartamento(id) {
+        if (!confirm('Tem certeza que deseja excluir este apartamento?')) {
+            return;
+        }
         try {
-            const url = `http://localhost:3000/apartamentos/${id}`;
-            console.log('URL da requisição DELETE:', url); // Adicione este log
+            const url = `${API_BASE_URL}/apartamentos/${id}`;
             const response = await fetch(url, {
                 method: 'DELETE'
             });
 
             if (response.ok) {
                 alert('Apartamento excluído com sucesso!');
-                window.location.reload(); // Recarrega a página para atualizar a lista
+                window.location.reload();
             } else {
-                alert('Erro ao excluir apartamento.');
+                const errorData = await response.json();
+                alert(`Erro ao excluir apartamento: ${errorData.error || response.statusText}`);
             }
         } catch (error) {
-            alert('Erro ao enviar requisição.');
+            console.error('Erro ao enviar requisição de exclusão:', error);
+            alert('Erro ao enviar requisição de exclusão.');
         }
     }
 
-    // Função para buscar um imóvel por ID
-    async function buscarApartamento(id) {
-        const response = await fetch(`http://localhost:3000/apartamentos/${id}`);
-        return response.json();
-    }
-
-    // Função para preencher o formulário de edição
+    // --- FUNÇÃO PARA PREENCHER FORMULÁRIO DE EDIÇÃO ---
     async function preencherFormularioEdicao(apartamento) {
         try {
-            console.log(apartamento);  // Verifica os dados do apartamento
-            if (!apartamento.id) {
-                throw new Error("Imóvel não possui ID.");
-            }
-
             document.getElementById('editId').value = apartamento.id;
             document.getElementById('editTitulo').value = apartamento.titulo;
-            document.getElementById('editPreco').value = apartamento.preco;  // Alteração para preco
+            document.getElementById('editPreco').value = apartamento.preco;
             document.getElementById('editRua').value = apartamento.endereco?.rua || '';
+            document.getElementById('editImageUrl').value = apartamento.imageUrl || '';
             
+            const currentImagePreview = document.getElementById('currentImagePreview');
+            currentImagePreview.innerHTML = '';
+
+            if (apartamento.imageUrl) {
+                const img = document.createElement('img');
+                // Use o proxy para o preview da imagem no modal de edição também
+                img.src = `${API_BASE_URL}/proxy-image?url=${encodeURIComponent(apartamento.imageUrl)}`;
+                img.alt = "Imagem atual";
+                img.style.maxWidth = '100px';
+                img.style.maxHeight = '100px';
+                img.style.display = 'block';
+                img.style.marginBottom = '5px';
+                currentImagePreview.appendChild(img);
+                
+                const urlText = document.createElement('p');
+                urlText.textContent = `URL Original: ${apartamento.imageUrl.substring(0, 50)}...`;
+                currentImagePreview.appendChild(urlText);
+            } else {
+                currentImagePreview.textContent = 'Nenhuma imagem atual.';
+            }
+
         } catch (erro) {
             console.error("Erro ao preencher formulário de edição:", erro);
         }
     }
 
-    // Função para enviar os dados atualizados
+    // --- FUNÇÃO PARA ENVIAR DADOS ATUALIZADOS (PUT) ---
     async function atualizarApartamento(event) {
         event.preventDefault();
 
         const id = document.getElementById('editId').value;
         const titulo = document.getElementById('editTitulo').value;
         const preco = parseFloat(document.getElementById('editPreco').value);
-        if(isNaN(preco)) {
-            alert('Preço Invalido');
+        const rua = document.getElementById('editRua').value;
+        const imageUrl = document.getElementById('editImageUrl').value;
+
+        if (isNaN(preco)) {
+            alert('Preço Inválido');
             return;
         }
-        const rua = document.getElementById('editRua').value;
-
         if (!id) {
             alert('ID do imóvel não encontrado');
             return;
@@ -167,36 +190,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const apartamento = {
             titulo,
-            preco,  // Preço ajustado
-            endereco: { rua }
+            preco,
+            endereco: { rua },
+            imageUrl: imageUrl || null
         };
 
         try {
-            const resposta = await fetch(`http://localhost:3000/apartamentos/${id}`, {
+            const resposta = await fetch(`${API_BASE_URL}/apartamentos/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(apartamento)
             });
 
             if (!resposta.ok) {
-                throw new Error("Erro ao atualizar imóvel");
+                const errorData = await resposta.json();
+                throw new Error(`Erro ao atualizar imóvel: ${errorData.error || resposta.statusText}`);
             }
 
             alert('Imóvel atualizado com sucesso!');
             document.getElementById('modalEdicao').style.display = 'none';
-            window.location.reload();  // Recarrega a página para mostrar as alterações
+            window.location.reload(); 
         } catch (erro) {
             console.error("Erro ao atualizar imóvel:", erro);
+            alert(erro.message);
         }
     }
 
-    // Fechar o modal de edição ao clicar no "X"
+    // --- FECHAR MODAL DE EDIÇÃO ---
     document.querySelector('.close').addEventListener('click', () => {
         document.getElementById('modalEdicao').style.display = 'none';
     });
 
-    // Adicionar o ouvinte de evento para o envio do formulário de edição
+    // --- OUVINTE DE EVENTO PARA ENVIO DO FORMULÁRIO DE EDIÇÃO ---
     document.getElementById('formEdicao').addEventListener('submit', atualizarApartamento);
 });

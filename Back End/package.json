@@ -4,6 +4,7 @@
   "main": "firebase.js",
   "dependencies": {
     "@fastify/cors": "^11.0.0",
+    "@fastify/static": "^8.2.0",
     "abort-controller": "^3.0.0",
     "abstract-logging": "^2.0.1",
     "agent-base": "^7.1.3",

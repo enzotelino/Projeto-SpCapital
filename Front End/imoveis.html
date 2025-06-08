@@ -14,7 +14,7 @@
             <ul class="nav_links">
                 <li><a href="index.html">Quem somos</a></li>
                 <li><a href="imoveis.html">Imóveis</a></li>
-                <li><a href="#">Contatos</a></li>
+                <li><a href="contatos.html">Contatos</a></li>
             </ul>
         </nav>
         <a class="cta" href="#"><button>Faça uma visita!</button></a>
@@ -29,7 +29,9 @@
                 <input type="number" id="preco" required><br><br>
                 <label for="rua">Endereço:</label>
                 <input type="text" id="rua" name="rua"><br><br>
-                <button type="submit">Cadastrar</button>
+
+                <label for="imageUrl">URL da Imagem</label>
+                <input type="url" id="imageUrl" placeholder="Ex: https://exemplo.com/imagem.jpg"><br><br> <button type="submit">Cadastrar</button>
             </form>
         </section>
                     <!-- Modal de Edição -->
@@ -45,7 +47,9 @@
                         <input type="number" id="editPreco" required><br><br>
                         <label for="editRua">Endereço:</label>
                         <input type="text" id="editRua"><br><br>
-                        <button type="submit">Salvar</button>
+                        
+                        <label for="editImageUrl">URL da Imagem:</label>
+                        <input type="url" id="editImageUrl" placeholder="Ex: https://exemplo.com/nova-imagem.jpg"><br><br> <div id="currentImagePreview" style="margin-bottom: 10px;"></div> <button type="submit">Salvar</button>
                     </form>
                 </div>
             </div>

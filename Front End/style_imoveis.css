@@ -265,4 +265,25 @@ form input, form button {
     transform: translateY(-5px);
 }
 
+.anuncio-imagem {
+    width: 100%;
+    height: 250px; 
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
 
+/* Para a imagem de preview no modal de edição */
+#currentImagePreview img {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Novo estilo para o texto da URL no modal */
+#currentImagePreview p {
+    font-size: 0.9em;
+    color: #666;
+    word-break: break-all; /* Quebra a URL se for muito longa */
+}
+
+/* ... seu CSS existente para modal e botões ... */

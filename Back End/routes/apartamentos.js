@@ -1,3 +1,4 @@
+const { parse } = require('yargs');
 const admin = require('../firebase');
 
 async function apartamentosRoutes(fastify, options) {
@@ -6,24 +7,25 @@ async function apartamentosRoutes(fastify, options) {
 
     // Adicionar apartamento
     fastify.post('/', async (request, reply) => {
-        const { titulo, preco, endereco } = request.body;
+        const { titulo, preco, endereco, imageUrl } = request.body;
         const criadoEm = admin.firestore.FieldValue.serverTimestamp();
         const atualizadoEm = admin.firestore.FieldValue.serverTimestamp();
 
-        if (preco === undefined) {
+        if (preco === undefined || isNaN(parseFloat(preco))) {
             reply.status(400).send({ error: 'O campo "preco" é obrigatório.' });
             return;
         }
 
         const docRef = await apartamentosCollection.add({
             titulo,
-            preco,
+            preco: parseFloat(preco),
             endereco,
+            imageUrl: imageUrl || null, 
             criadoEm,
             atualizadoEm
         });
 
-        reply.send({ id: docRef.id });
+        reply.send({ id: docRef.id, imageUrl });
     });
 
     // Buscar todos os apartamentos
@@ -54,28 +56,42 @@ async function apartamentosRoutes(fastify, options) {
     // Atualizar apartamento (corrige erro 500)
     fastify.put('/:id', async (request, reply) => {
         const { id } = request.params;
-        const { preco, endereco, titulo } = request.body;
+        const { titulo, preco, endereco, imageUrl} = request.body;
         const atualizadoEm = admin.firestore.FieldValue.serverTimestamp();
 
-        await apartamentosCollection.doc(id).update({
+        let updateData = {
             titulo,
-            preco,
+            preco: parseFloat(preco),
             endereco,
+            imageUrl: imageUrl || null,
             atualizadoEm
-        });
-
-        reply.send({ message: 'Apartamento atualizado com sucesso' });
+        };
+        
+        try {
+            await apartamentosCollection.doc(id).update(updateData);
+            reply.send({message: 'Apartamento atualizado com sucesso', imageUrl: updateData.imageUrl});
+        } catch (error) {
+            console.error('Erro ao atualizar apartamento:', error);
+            reply.status(500).send({error: 'Erro interno ao atualizar apartamento.'});
+        }
     });
 
     // Remover apartamento
     fastify.delete('/:id', async (request, reply) => {
-        const { id } = request.params;
+  const { id } = request.params;
         try {
-            await apartamentosCollection.doc(id).delete();
-            reply.send({ message: 'Apartamento removido com sucesso' });
+            const docRef = apartamentosCollection.doc(id);
+            const doc = await docRef.get();
+
+            if (!doc.exists) {
+                return reply.status(404).send({ message: 'Apartamento não encontrado.' });
+            }
+            
+            await docRef.delete();
+            reply.send({ message: 'Apartamento removido com sucesso.' });
         } catch (error) {
             console.error('Erro ao remover apartamento:', error);
-            reply.status(500).send({ error: 'Erro ao remover apartamento' });
+            reply.status(500).send({ error: 'Erro ao remover apartamento.' });
         }
     });
 }
