@@ -2,8 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const API_BASE_URL = 'http://localhost:3000';
 
-    // --- SEU CÓDIGO DE CADASTRO DE IMÓVEL (POST) PERMANECE O MESMO ---
-    // (Ele já envia a URL da imagem para o backend e a armazena no Firestore)
     document.getElementById('formImovel').addEventListener('submit', async (event) => {
         event.preventDefault();
         const titulo = document.getElementById('titulo').value;
@@ -58,8 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (apartamento.imageUrl) {
                     const img = document.createElement('img');
-                    // AQUI ESTÁ A MUDANÇA PRINCIPAL: Usando o endpoint do proxy para o 'src'
-                    // `encodeURIComponent` é importante para URLs com caracteres especiais
+                    
                     img.src = `${API_BASE_URL}/proxy-image?url=${encodeURIComponent(apartamento.imageUrl)}`;
                     img.alt = apartamento.titulo;
                     img.classList.add('anuncio-imagem');
@@ -110,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Erro ao carregar anúncios.');
         });
 
-    // --- FUNÇÃO DE EXCLUIR APARTAMENTO (NÃO MUDA) ---
+    // --- FUNÇÃO DE EXCLUIR APARTAMENTO //
     async function excluirApartamento(id) {
         if (!confirm('Tem certeza que deseja excluir este apartamento?')) {
             return;
@@ -134,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // --- FUNÇÃO PARA PREENCHER FORMULÁRIO DE EDIÇÃO ---
+    // FUNÇÃO PARA PREENCHER FORMULÁRIO DE EDIÇÃO 
     async function preencherFormularioEdicao(apartamento) {
         try {
             document.getElementById('editId').value = apartamento.id;
@@ -148,7 +145,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (apartamento.imageUrl) {
                 const img = document.createElement('img');
-                // Use o proxy para o preview da imagem no modal de edição também
                 img.src = `${API_BASE_URL}/proxy-image?url=${encodeURIComponent(apartamento.imageUrl)}`;
                 img.alt = "Imagem atual";
                 img.style.maxWidth = '100px';
@@ -169,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // --- FUNÇÃO PARA ENVIAR DADOS ATUALIZADOS (PUT) ---
+    // FUNÇÃO PARA ENVIAR DADOS ATUALIZADOS (PUT) 
     async function atualizarApartamento(event) {
         event.preventDefault();
 
@@ -216,11 +212,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // --- FECHAR MODAL DE EDIÇÃO ---
     document.querySelector('.close').addEventListener('click', () => {
         document.getElementById('modalEdicao').style.display = 'none';
     });
 
-    // --- OUVINTE DE EVENTO PARA ENVIO DO FORMULÁRIO DE EDIÇÃO ---
     document.getElementById('formEdicao').addEventListener('submit', atualizarApartamento);
 });

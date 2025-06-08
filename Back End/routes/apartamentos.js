@@ -38,7 +38,7 @@ async function apartamentosRoutes(fastify, options) {
         reply.send(apartamentos);
     });
 
-    // Buscar apartamento por ID (corrige o erro 404)
+    // Buscar apartamento por ID 
     fastify.get('/:id', async (request, reply) => {
         const { id } = request.params;
         try {
@@ -53,7 +53,7 @@ async function apartamentosRoutes(fastify, options) {
         }
     });
 
-    // Atualizar apartamento (corrige erro 500)
+    // Atualizar apartamento 
     fastify.put('/:id', async (request, reply) => {
         const { id } = request.params;
         const { titulo, preco, endereco, imageUrl} = request.body;
